@@ -51,7 +51,7 @@ public class Customer {
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id", foreignKey = @ForeignKey(name = "fk_customer_address"))
     private Address address;
 

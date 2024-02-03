@@ -1,7 +1,5 @@
-package dto.FilmDTO;
+package dto;
 
-import entity.Actor;
-import entity.Category;
 import entity.Language;
 import entity.enums.Rating;
 import entity.enums.SpecialFeature;
@@ -22,9 +20,8 @@ public class FilmDTO {
     private Language originalLanguage;
     private String description;
     private Integer length;
-    private Set<Category> categories;
-    private Set<Actor> actors;
+    private Set<CategoryDTO> categories;
+    private Set<ActorDTO> actors;
     private Rating rating;
     private Set<SpecialFeature> features;
-
 }

@@ -5,6 +5,7 @@ import entity.Store;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public class StoreDao implements Dao<Store, Long> {
 
@@ -24,6 +25,10 @@ public class StoreDao implements Dao<Store, Long> {
         return genericDao.findAll();
     }
 
+    @Override
+    public List<Store> findByIds(Set<Long> ids) {
+        return genericDao.findByIds(ids);
+    }
 
     @Override
     public void save(Store entity) {

@@ -5,6 +5,7 @@ import entity.Actor;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public class ActorDao implements Dao<Actor, Long> {
 
@@ -20,10 +21,14 @@ public class ActorDao implements Dao<Actor, Long> {
     }
 
     @Override
+    public List<Actor> findByIds(Set<Long> ids) {
+        return genericDao.findByIds(ids);
+    }
+
+    @Override
     public List<Actor> findAll() {
         return genericDao.findAll();
     }
-
 
     @Override
     public void save(Actor entity) {

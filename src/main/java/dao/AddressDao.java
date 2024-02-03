@@ -1,10 +1,12 @@
 package dao;
 
 import dao.interfaces.Dao;
+import entity.Actor;
 import entity.Address;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public class AddressDao implements Dao<Address, Long> {
 
@@ -14,6 +16,11 @@ public class AddressDao implements Dao<Address, Long> {
         this.genericDao = genericDao;
     }
 
+
+    @Override
+    public List<Address> findByIds(Set<Long> ids) {
+        return genericDao.findByIds(ids);
+    }
     @Override
     public Optional<Address> findById(Long id) {
         return genericDao.findById(id);

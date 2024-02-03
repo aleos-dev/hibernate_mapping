@@ -8,17 +8,25 @@ import jakarta.persistence.Persistence;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static java.util.Objects.nonNull;
+
 
 public class HibernateUtil {
-    private static final EntityManagerFactory EMF = buildEM();
 
-    private static EntityManagerFactory buildEM() {
+    private static EntityManagerFactory EMF = buildEM(null);
+
+    private static EntityManagerFactory buildEM(String persistenceUnitName) {
         try {
+            var persistenceUnit = nonNull(persistenceUnitName) ? persistenceUnitName : "personal";
             return Persistence.createEntityManagerFactory("personal");
         } catch (Exception ex) {
             System.err.println("Initial EntityManagerFactory creation failed." + ex);
             throw new ExceptionInInitializerError(ex);
         }
+    }
+
+    public static void initNewEMF(String name) {
+        EMF = buildEM(name);
     }
 
     public static EntityManager getEntityManager() {

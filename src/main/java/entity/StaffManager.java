@@ -24,16 +24,17 @@ import java.time.ZonedDateTime;
 public class StaffManager {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @ManyToOne(optional = false)
+    @ToString.Exclude
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id", nullable = false, foreignKey = @ForeignKey(name = "fk_staff_address"))
     private Address address;
 
-    @ToString.Exclude
-    @OneToOne(optional = false)
-    @JoinColumn(name = "store_id", nullable = false, foreignKey = @ForeignKey(name = "fk_staff_store"))
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_id", foreignKey = @ForeignKey(name = "fk_staff_store"))
+    @MapsId
     private Store store;
 
     @NotBlank(message = "Name cannot be blank")

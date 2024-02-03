@@ -2,22 +2,26 @@ package dao;
 
 import dao.interfaces.Dao;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import util.HibernateUtil;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class GenericDao<T, ID extends Serializable> implements Dao<T, ID> {
 
     private final Class<T> clazz;
     private final EntityManager em;
 
-    protected GenericDao(Class<T> clazz) {
+    /*protected GenericDao(Class<T> clazz) {
         this.clazz = clazz;
-        em = null;
-    }
+        em = HibernateUtil.getEntityManager();
+    }*/
 
     public GenericDao(EntityManager em, Class<T> clazz) {
         this.clazz = clazz;
@@ -27,45 +31,53 @@ public class GenericDao<T, ID extends Serializable> implements Dao<T, ID> {
     @Override
     public Optional<T> findById(ID id) {
 
-        return Objects.nonNull(em)
-                ? Optional.ofNullable(em.find(clazz, id))
-                : Optional.ofNullable(HibernateUtil.runInContextWithResult(em -> em.find(clazz, id)));
+        return Optional.ofNullable(em.find(clazz, id));
+    }
+
+    @Override
+    public List<T> findByIds(Set<ID> ids) {
+
+        if (ids == null || ids.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        String jpql = "SELECT e FROM " + clazz.getSimpleName() + " e WHERE e.id IN :ids";
+
+
+        TypedQuery<T> query = em.createQuery(jpql, clazz);
+        query.setParameter("ids", ids);
+
+        return query.getResultList();
     }
 
     @Override
     public List<T> findAll() {
 
-        return Objects.nonNull(em)
-                ? em.createQuery("FROM " + clazz.getName(), clazz).getResultList()
-                : HibernateUtil.runInContextWithResult(em -> em.createQuery("FROM " + clazz.getName(), clazz).getResultList());
+        return em.createQuery("FROM " + clazz.getName(), clazz).getResultList();
     }
 
     @Override
     public void save(T entity) {
 
-        if (Objects.nonNull(em)) {
-
-            em.persist(entity);
-
-        } else HibernateUtil.runInContext(em -> em.persist(entity));
+        em.persist(entity);
     }
 
     @Override
     public T update(T entity) {
-        return Objects.nonNull(em) ? em.merge(entity) : HibernateUtil.runInContextWithResult(em -> em.merge(entity));
+        return em.merge(entity);
     }
 
     @Override
     public void delete(T entity) {
 
-        if (Objects.nonNull(em)) {
+        em.remove(em.merge(entity));
+    }
 
-            em.remove(em.merge(entity));
+    public <T> T runInContextWithResult(Function<EntityManager, T> func) {
+        return func.apply(em);
+    }
 
-        } else HibernateUtil.runInContext(
-                em -> {
-                    var merged = em.merge(entity);
-                    em.remove(merged);
-                });
+    public void runInContext(Consumer<EntityManager> consumer) {
+        consumer.accept(em);
     }
 }

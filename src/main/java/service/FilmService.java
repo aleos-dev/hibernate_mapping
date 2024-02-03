@@ -1,9 +1,8 @@
 package service;
 
-import dto.FilmDTO.FilmDTO;
-import entity.Film;
+import dto.FilmDTO;
 
 public interface FilmService {
 
-    void register(FilmDTO newFilm);
+    long register(FilmDTO newFilm);
 }

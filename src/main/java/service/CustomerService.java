@@ -1,6 +1,6 @@
 package service;
 
-import dto.CustomerDTO.CustomerDTO;
+import dto.CustomerDTO;
 
 public interface CustomerService {
 

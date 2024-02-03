@@ -1,10 +1,12 @@
 package dao;
 
 import dao.interfaces.Dao;
+import entity.Category;
 import entity.City;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public class CityDao implements Dao<City, Long> {
 
@@ -17,6 +19,11 @@ public class CityDao implements Dao<City, Long> {
     @Override
     public Optional<City> findById(Long id) {
         return genericDao.findById(id);
+    }
+
+    @Override
+    public List<City> findByIds(Set<Long> ids) {
+        return genericDao.findByIds(ids);
     }
 
     @Override

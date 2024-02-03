@@ -18,7 +18,7 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "country", uniqueConstraints = @UniqueConstraint(name = "uq_country_name", columnNames = "name"))
-@SequenceGenerator(name = "country_seq", sequenceName = "mapping_personal_db.country_id_seq", allocationSize = 1)
+@SequenceGenerator(name = "country_seq", sequenceName = "country_id_seq", allocationSize = 1)
 public class Country {
 
     @Id

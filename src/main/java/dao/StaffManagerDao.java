@@ -1,10 +1,12 @@
 package dao;
 
 import dao.interfaces.Dao;
+import entity.Rental;
 import entity.StaffManager;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public class StaffManagerDao implements Dao<StaffManager, Long> {
 
@@ -20,10 +22,14 @@ public class StaffManagerDao implements Dao<StaffManager, Long> {
     }
 
     @Override
+    public List<StaffManager> findByIds(Set<Long> ids) {
+        return genericDao.findByIds(ids);
+    }
+
+    @Override
     public List<StaffManager> findAll() {
         return genericDao.findAll();
     }
-
 
     @Override
     public void save(StaffManager entity) {

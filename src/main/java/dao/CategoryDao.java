@@ -1,10 +1,12 @@
 package dao;
 
 import dao.interfaces.Dao;
+import entity.Address;
 import entity.Category;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public class CategoryDao implements Dao<Category, Long> {
 
@@ -17,6 +19,11 @@ public class CategoryDao implements Dao<Category, Long> {
     @Override
     public Optional<Category> findById(Long id) {
         return genericDao.findById(id);
+    }
+
+    @Override
+    public List<Category> findByIds(Set<Long> ids) {
+        return genericDao.findByIds(ids);
     }
 
     @Override

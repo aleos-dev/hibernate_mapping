@@ -18,41 +18,42 @@ import java.util.List;
 @EqualsAndHashCode(of = "id")
 @Entity
 @Table(name = "store", indexes = {@Index(name = "uq_store_address", columnList = "address_id")})
-@ToString
+@ToString (of = {"id", "name"})
 public class Store {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @OneToOne(mappedBy = "store")
+    private String name;
+
+    @OneToOne(optional = false, mappedBy = "store", fetch = FetchType.LAZY)
     private StaffManager staffManager;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id", nullable = false, foreignKey = @ForeignKey(name = "fk_store_address"))
     private Address address;
 
     @OneToMany(mappedBy = "store", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, orphanRemoval = true)
     @Setter(AccessLevel.PRIVATE)
     @Builder.Default
-    @ToString.Exclude
     List<Customer> customers = new ArrayList<>();
 
     @OneToMany(mappedBy = "store", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, orphanRemoval = true)
     @Setter(AccessLevel.PRIVATE)
     @Builder.Default
-    @ToString.Exclude
     List<Rental> rentalBook = new ArrayList<>();
 
     @OneToMany(mappedBy = "store", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, orphanRemoval = true)
     @Setter(AccessLevel.PRIVATE)
     @Builder.Default
-    @ToString.Exclude
     List<Inventory> inventoryBook = new ArrayList<>();
 
     @UpdateTimestamp
     @Column(name = "last_update")
     private ZonedDateTime lastUpdate;
+
+
 
     public void addCustomer(Customer customer) {
         customers.add(customer);

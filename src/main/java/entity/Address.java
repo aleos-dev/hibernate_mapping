@@ -30,7 +30,8 @@ public class Address {
     @Column(nullable = false, length = 50)
     private String address;
 
-    @ManyToOne(optional = false)
+    @ToString.Exclude
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "city_id", nullable = false, foreignKey = @ForeignKey(name = "fk_address_city"))
     private City city;
 

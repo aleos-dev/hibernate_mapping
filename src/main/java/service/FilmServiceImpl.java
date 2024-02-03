@@ -1,11 +1,14 @@
 package service;
 
 import dao.DaoFactory;
-import dto.FilmDTO.FilmDTO;
+import dto.ActorDTO;
+import dto.CategoryDTO;
+import dto.FilmDTO;
 import entity.Actor;
 import entity.Category;
 import entity.Film;
 import entity.Language;
+import exception.ActorDTOException;
 import exception.FilmDTOException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -17,20 +20,23 @@ import java.util.stream.Collectors;
 public class FilmServiceImpl implements FilmService {
 
     @Override
-    public void register(FilmDTO newFilm) {
+    public long register(FilmDTO newFilm) {
 
-        HibernateUtil.runInContext(em -> {
+        return HibernateUtil.runInContextWithResult(em -> {
 
-                    var lang = findLang(newFilm.getLanguage(), em);
-                    var originalLang = findLang(newFilm.getOriginalLanguage(), em);
                     var features = Film.convertSpecialFeaturesToString(newFilm.getFeatures());
-                    var actors = findActors(newFilm, em);
-                    var categories = findCategoriesAndFetchFilmsCollection(newFilm, em);
+                    var lang = Language.builder().id(newFilm.getLanguage().getId()).build();
+                    var origLang = Objects.isNull(newFilm.getOriginalLanguage())
+                            ? null
+                            : Language.builder().id(newFilm.getOriginalLanguage().getId()).build();
+                    var actors = newFilm.getActors().stream()
+                            .map(dto -> Actor.builder().id(dto.getId()).build())
+                            .collect(Collectors.toSet());
 
                     Film createdFilm = Film.builder()
                             .title(newFilm.getTitle())
                             .language(lang)
-                            .originalLanguage(originalLang)
+                            .originalLanguage(origLang)
                             .description(newFilm.getDescription())
                             .length(newFilm.getLength())
                             .rating(newFilm.getRating())
@@ -38,42 +44,25 @@ public class FilmServiceImpl implements FilmService {
                             .specialFeatures(features)
                             .build();
 
-                    categories.forEach(createdFilm::addCategory);
+                    // todo: just an example of owning side effect on difference between category and actor record creation
+                    // todo: will be good to make insert as batch operation
+                    var categories = findCategoriesAndFetchFilmsCollection(newFilm, em);
+                    categories.forEach(c -> c.addFilm(createdFilm));
 
                     DaoFactory.buildFilmDao(em).save(createdFilm);
 
-
-//                    DaoFactory.buildFilmDao(em).save(createdFilm);
+                    return createdFilm.getId();
                 }
         );
     }
 
-    private static Set<Actor> findActors(FilmDTO newFilm, EntityManager em) {
-
-        if (Objects.nonNull(newFilm.getActors())) {
-
-
-            var actorDao = DaoFactory.buildActorDao(em);
-
-
-
-            return newFilm.getActors().stream()
-                    .map(Actor::getId)
-                    .map(actorDao::findById)
-                    .map(a -> a.orElseThrow(() -> new FilmDTOException("Invalid Actor ID of DTO doesn't exist")))
-                    .collect(Collectors.toSet());
-        }
-
-        return Collections.emptySet();
-    }
-
-    private static List<Category> findCategoriesAndFetchFilmsCollection(FilmDTO newFilm, EntityManager em) {
+    private static Set<Category> findCategoriesAndFetchFilmsCollection(FilmDTO newFilm, EntityManager em) {
 
         if (Objects.nonNull(newFilm.getCategories())) {
 
-            List<Long> categoryIds = newFilm.getCategories().stream()
-                    .map(Category::getId)
-                    .collect(Collectors.toList());
+            Set<Long> categoryIds = newFilm.getCategories().stream()
+                    .map(CategoryDTO::getId)
+                    .collect(Collectors.toSet());
 
             TypedQuery<Category> query = em.createQuery("SELECT c FROM Category c left join fetch c.films WHERE c.id IN :ids", Category.class);
             query.setParameter("ids", categoryIds);
@@ -84,11 +73,32 @@ public class FilmServiceImpl implements FilmService {
                 throw new FilmDTOException("One or more Category IDs from DTO do not exist");
             }
 
-            return fetchedCategories;
+            return new HashSet<>(fetchedCategories);
         }
 
-        return Collections.emptyList();
+        return Collections.emptySet();
     }
+
+    private static Set<Actor> findActors(FilmDTO newFilm, EntityManager em) {
+
+        if (Objects.nonNull(newFilm.getActors())) {
+
+            Set<Long> actorIds = newFilm.getActors().stream()
+                    .map(ActorDTO::getId)
+                    .collect(Collectors.toSet());
+
+            var actors = DaoFactory.buildActorDao(em).findByIds(actorIds);
+
+            if (actors.size() != actorIds.size()) {
+                throw new ActorDTOException("One or more Actor IDs from DTO do not exist");
+            }
+
+            return new HashSet<>(actors);
+        }
+
+        return Collections.emptySet();
+    }
+
 
     private static Language findLang(Language lang, EntityManager em) {
 

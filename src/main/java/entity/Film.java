@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @ToString
-@EqualsAndHashCode(of = {"title", "releaseYear", "length"})
+@EqualsAndHashCode(of = "id")
 public class Film {
 
     @Id
@@ -59,7 +59,8 @@ public class Film {
     @ToString.Exclude
     @Builder.Default
     @Setter(AccessLevel.PRIVATE)
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+//    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany
     @JoinTable(name = "actor_film", foreignKey = @ForeignKey(name = "fk_actor_film"),
             joinColumns = @JoinColumn(name = "film_id", nullable = false),
             inverseJoinColumns = @JoinColumn(name = "actor_id", nullable = false))

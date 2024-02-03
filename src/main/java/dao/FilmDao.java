@@ -2,6 +2,7 @@ package dao;
 
 import dao.interfaces.Dao;
 import entity.Category;
+import entity.Customer;
 import entity.Film;
 import exception.FilmDTOException;
 import util.HibernateUtil;
@@ -9,6 +10,7 @@ import util.HibernateUtil;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 public class FilmDao implements Dao<Film, Long> {
 
@@ -21,6 +23,11 @@ public class FilmDao implements Dao<Film, Long> {
     @Override
     public Optional<Film> findById(Long id) {
         return genericDao.findById(id);
+    }
+
+    @Override
+    public List<Film> findByIds(Set<Long> ids) {
+        return genericDao.findByIds(ids);
     }
 
     @Override
