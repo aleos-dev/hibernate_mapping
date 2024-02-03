@@ -13,14 +13,12 @@ import static java.util.Objects.nonNull;
 
 public class HibernateUtil {
 
-    private static final String defaultPU = "personalInMemory";
-
-    private static EntityManagerFactory EMF = buildEM(defaultPU);
+    private static EntityManagerFactory EMF = buildEM("personalInMemory");
 
     private static EntityManagerFactory buildEM(String persistenceUnitName) {
         try {
             var persistenceUnit = nonNull(persistenceUnitName) ? persistenceUnitName : "personal";
-            return Persistence.createEntityManagerFactory("personal");
+            return Persistence.createEntityManagerFactory(persistenceUnit);
         } catch (Exception ex) {
             System.err.println("Initial EntityManagerFactory creation failed." + ex);
             throw new ExceptionInInitializerError(ex);
