@@ -13,7 +13,9 @@ import static java.util.Objects.nonNull;
 
 public class HibernateUtil {
 
-    private static EntityManagerFactory EMF = buildEM(null);
+    private static final String defaultPU = "personalInMemory";
+
+    private static EntityManagerFactory EMF = buildEM(defaultPU);
 
     private static EntityManagerFactory buildEM(String persistenceUnitName) {
         try {
