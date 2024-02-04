@@ -2,6 +2,7 @@ package dao;
 
 import dao.interfaces.Dao;
 import entity.Store;
+import jakarta.persistence.TypedQuery;
 
 import java.util.List;
 import java.util.Optional;
@@ -40,8 +41,13 @@ public class StoreDao implements Dao<Store, Long> {
         return genericDao.update(entity);
     }
 
+    public long registeredStoreCount() {
+        return genericDao.registeredCount();
+    }
+
     @Override
     public void delete(Store entity) {
         genericDao.delete(entity);
     }
+
 }

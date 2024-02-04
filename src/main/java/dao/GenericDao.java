@@ -73,6 +73,10 @@ public class GenericDao<T, ID extends Serializable> implements Dao<T, ID> {
         em.remove(em.merge(entity));
     }
 
+    public long registeredCount() {
+        return (long) em.createQuery("SELECT COUNT(*) FROM " + clazz.getName(), clazz).getSingleResult();
+    }
+
     public <T> T runInContextWithResult(Function<EntityManager, T> func) {
         return func.apply(em);
     }

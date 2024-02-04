@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import service.CustomerServiceImpl;
 import service.FilmServiceImpl;
 import service.StoreServiceImpl;
+import util.DataGenerator;
 import util.HibernateUtil;
 
 import java.math.BigDecimal;
@@ -31,6 +32,10 @@ public class Main {
 
             logger.info("==============================================================START==================================");
             logger.info(HibernateUtil.runInContextWithResult(em -> em.find(Country.class, 1l).toString()));
+
+            CustomerDTO customerDTO = DataGenerator.generateCustomerDTO();
+
+            System.out.println(customerDTO);
 
 //            registerCustomer("newCustomerEmail@dog.com");
 //            registerFilm();

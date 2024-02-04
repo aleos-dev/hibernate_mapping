@@ -49,4 +49,8 @@ public class FilmDao implements Dao<Film, Long> {
     public void delete(Film entity) {
         genericDao.delete(entity);
     }
+
+    public long registeredFilmCount() {
+        return genericDao.registeredCount();
+    }
 }

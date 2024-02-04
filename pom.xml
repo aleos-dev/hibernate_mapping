@@ -85,8 +85,11 @@
             <artifactId>postgresql</artifactId>
             <version>42.7.1</version>
         </dependency>
-
-
+       <dependency>
+            <groupId>com.devskiller</groupId>
+            <artifactId>jfairy</artifactId>
+            <version>0.6.5</version>
+        </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
