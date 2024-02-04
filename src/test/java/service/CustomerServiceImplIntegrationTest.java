@@ -8,6 +8,7 @@ import jakarta.persistence.Persistence;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import util.DataGenerator;
 import util.HibernateUtil;
 
 
@@ -17,14 +18,12 @@ public class CustomerServiceImplIntegrationTest {
 
     private EntityManagerFactory emf;
     private EntityManager em;
-    private CustomerServiceImpl customerService;
 
     @BeforeEach
     public void setUp() {
         HibernateUtil.initNewEMF("personalInMemory");
         emf = HibernateUtil.getEntityManagerFactory();
         em = emf.createEntityManager();
-        customerService = new CustomerServiceImpl();
     }
 
     @AfterEach
@@ -39,27 +38,21 @@ public class CustomerServiceImplIntegrationTest {
 
     @Test
     public void testRegisterValidCustomer() {
+
         em.getTransaction().begin();
 
-        CustomerDTO customerDTO = new CustomerDTO();
-        // Set properties on customerDTO...
-        customerDTO.setFirstName("John");
-        customerDTO.setLastName("Doe");
-        customerDTO.setEmail("john@example.com");
-        customerDTO.setAddressId(1);
-        customerDTO.setStoreId(1);
-        customerDTO.setActive(true);
+        CustomerDTO customerDTO = DataGenerator.generateCustomerDTO();
 
-        assertDoesNotThrow(() -> customerService.register(customerDTO));
+        assertDoesNotThrow(() -> new CustomerServiceImpl().register(customerDTO));
 
         em.getTransaction().commit();
 
         Customer foundCustomer = em.createQuery("SELECT c FROM Customer c WHERE c.email = :email", Customer.class)
-                .setParameter("email", "john@example.com")
+                .setParameter("email", customerDTO.getEmail())
                 .getSingleResult();
 
         assertNotNull(foundCustomer);
-        assertEquals("John", foundCustomer.getFirstName());
-        assertEquals("Doe", foundCustomer.getLastName());
+        assertEquals(customerDTO.getFirstName(), foundCustomer.getFirstName());
+        assertEquals(customerDTO.getLastName(), foundCustomer.getLastName());
     }
 }
