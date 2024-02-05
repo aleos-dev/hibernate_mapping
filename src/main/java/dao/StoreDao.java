@@ -41,8 +41,8 @@ public class StoreDao implements Dao<Store, Long> {
         return genericDao.update(entity);
     }
 
-    public long registeredStoreCount() {
-        return genericDao.registeredCount();
+    public List<Long> registeredStoreIds() {
+        return genericDao.registeredIds();
     }
 
     @Override

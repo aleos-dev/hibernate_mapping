@@ -46,4 +46,9 @@ public class CustomerDao implements Dao<Customer, Long> {
     public void delete(Customer entity) {
         genericDao.delete(entity);
     }
+
+    public List<Long> registeredCustomerIds() {
+        return genericDao.registeredIds();
+    }
+
 }

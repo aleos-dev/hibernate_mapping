@@ -50,7 +50,7 @@ public class FilmDao implements Dao<Film, Long> {
         genericDao.delete(entity);
     }
 
-    public long registeredFilmCount() {
-        return genericDao.registeredCount();
+    public List<Long> registeredFilmIds() {
+        return genericDao.registeredIds();
     }
 }

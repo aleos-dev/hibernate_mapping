@@ -47,7 +47,7 @@ public class AddressDao implements Dao<Address, Long> {
         genericDao.delete(entity);
     }
 
-    public long registeredAddressCount() {
-        return genericDao.registeredCount();
+    public List<Long> registeredAddressIds() {
+        return genericDao.registeredIds();
     }
 }

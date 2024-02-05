@@ -5,17 +5,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RentalDTO {
+public class LanguageDTO {
 
-    long customerID;
-
-    long storeId;
-
-    long fimlId;
+    private long id;
 }

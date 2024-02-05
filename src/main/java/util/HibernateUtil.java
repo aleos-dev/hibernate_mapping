@@ -13,34 +13,37 @@ import static java.util.Objects.nonNull;
 
 public class HibernateUtil {
 
-    private static EntityManagerFactory EMF = buildEM("personalInMemory");
+    private static final Object LOCK = new Object();
+    private static EntityManagerFactory EMF;
 
-    private static EntityManagerFactory buildEM(String persistenceUnitName) {
+    public static EntityManagerFactory getEntityManagerFactory(String persistenceUnitName) {
+        if (EMF == null) {
+            synchronized (LOCK) {
+                if (EMF == null) {
+                    EMF = buildEntityManagerFactory(persistenceUnitName);
+                }
+            }
+        }
+        return EMF;
+    }
+
+    private static EntityManagerFactory buildEntityManagerFactory(String persistenceUnitName) {
         try {
-            var persistenceUnit = nonNull(persistenceUnitName) ? persistenceUnitName : "personal";
-            return Persistence.createEntityManagerFactory(persistenceUnit);
+            String unitName = (persistenceUnitName != null && !persistenceUnitName.trim().isEmpty()) ? persistenceUnitName : "default";
+            return Persistence.createEntityManagerFactory(unitName);
         } catch (Exception ex) {
             System.err.println("Initial EntityManagerFactory creation failed." + ex);
             throw new ExceptionInInitializerError(ex);
         }
     }
 
-    public static void initNewEMF(String name) {
-        EMF = buildEM(name);
-    }
-
     public static EntityManager getEntityManager() {
         return EMF.createEntityManager();
     }
 
-    public static EntityManagerFactory getEntityManagerFactory() {
-        return EMF;
-    }
-
     public static void shutdown() {
-        getEntityManagerFactory().close();
+        EMF.close();
     }
-
 
     public static <T> T runInContextWithResult(Function<EntityManager, T> func) {
         var em = getEntityManager();

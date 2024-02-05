@@ -44,4 +44,8 @@ public class ActorDao implements Dao<Actor, Long> {
     public void delete(Actor entity) {
         genericDao.delete(entity);
     }
+
+    public List<Long> registeredActorIds() {
+        return genericDao.registeredIds();
+    }
 }

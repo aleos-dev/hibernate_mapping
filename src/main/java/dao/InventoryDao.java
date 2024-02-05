@@ -4,7 +4,6 @@ import dao.interfaces.Dao;
 import entity.Film;
 import entity.Inventory;
 import entity.Store;
-import util.HibernateUtil;
 
 import java.util.List;
 import java.util.Optional;
@@ -58,19 +57,21 @@ public class InventoryDao implements Dao<Inventory, Long> {
                     JOIN FETCH i.store
                 WHERE
                     i.store.id = :storeId
-                AND 
+                AND
                     i.film.id = :filmId
                 """;
 
-        return genericDao.runInContextWithResult(em -> {
+        return genericDao.applyFunc(em -> {
 
             var query = em.createQuery(jpql, Inventory.class);
             query.setParameter("filmId", filmId);
             query.setParameter("storeId", storeId);
 
+            query.setHint("org.hibernate.readOnly", true);
+
             List<Inventory> resultList = query.getResultList();
 
-//        todo: find out how to open session in READ_MODE
+            // todo: find out how to open session in READ_MODE
             em.clear();
 
             return resultList;

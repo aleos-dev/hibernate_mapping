@@ -3,7 +3,6 @@ package dao;
 import dao.interfaces.Dao;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
-import util.HibernateUtil;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -17,11 +16,6 @@ public class GenericDao<T, ID extends Serializable> implements Dao<T, ID> {
 
     private final Class<T> clazz;
     private final EntityManager em;
-
-    /*protected GenericDao(Class<T> clazz) {
-        this.clazz = clazz;
-        em = HibernateUtil.getEntityManager();
-    }*/
 
     public GenericDao(EntityManager em, Class<T> clazz) {
         this.clazz = clazz;
@@ -52,13 +46,11 @@ public class GenericDao<T, ID extends Serializable> implements Dao<T, ID> {
 
     @Override
     public List<T> findAll() {
-
         return em.createQuery("FROM " + clazz.getName(), clazz).getResultList();
     }
 
     @Override
     public void save(T entity) {
-
         em.persist(entity);
     }
 
@@ -69,19 +61,19 @@ public class GenericDao<T, ID extends Serializable> implements Dao<T, ID> {
 
     @Override
     public void delete(T entity) {
-
         em.remove(em.merge(entity));
     }
 
-    public long registeredCount() {
-        return (long) em.createQuery("SELECT COUNT(*) FROM " + clazz.getName(), clazz).getSingleResult();
+    public List<Long> registeredIds() {
+        return em.createQuery("SELECT id FROM " + clazz.getName(), Long.class).getResultList();
     }
 
-    public <T> T runInContextWithResult(Function<EntityManager, T> func) {
+
+    public <T> T applyFunc(Function<EntityManager, T> func) {
         return func.apply(em);
     }
 
-    public void runInContext(Consumer<EntityManager> consumer) {
+    public void acceptConsumer(Consumer<EntityManager> consumer) {
         consumer.accept(em);
     }
 }

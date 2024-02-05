@@ -45,4 +45,8 @@ public class LanguageDao implements Dao<Language, Long> {
     public void delete(Language entity) {
         genericDao.delete(entity);
     }
+
+    public List<Long> registeredLanguageIds() {
+        return genericDao.registeredIds();
+    }
 }

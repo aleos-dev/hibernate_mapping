@@ -79,34 +79,4 @@ public class FilmServiceImpl implements FilmService {
         return Collections.emptySet();
     }
 
-    private static Set<Actor> findActors(FilmDTO newFilm, EntityManager em) {
-
-        if (Objects.nonNull(newFilm.getActors())) {
-
-            Set<Long> actorIds = newFilm.getActors().stream()
-                    .map(ActorDTO::getId)
-                    .collect(Collectors.toSet());
-
-            var actors = DaoFactory.buildActorDao(em).findByIds(actorIds);
-
-            if (actors.size() != actorIds.size()) {
-                throw new ActorDTOException("One or more Actor IDs from DTO do not exist");
-            }
-
-            return new HashSet<>(actors);
-        }
-
-        return Collections.emptySet();
-    }
-
-
-    private static Language findLang(Language lang, EntityManager em) {
-
-        var languageDao = DaoFactory.buildLanguageDao(em);
-
-        if (Objects.isNull(lang)) return null;
-
-        return languageDao.findById(lang.getId())
-                .orElseThrow(() -> new FilmDTOException("Language id must be existed in db"));
-    }
 }

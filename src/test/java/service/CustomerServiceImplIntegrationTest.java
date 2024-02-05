@@ -4,13 +4,11 @@ import dto.CustomerDTO;
 import entity.Customer;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import util.DataGenerator;
 import util.HibernateUtil;
-
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,8 +19,7 @@ public class CustomerServiceImplIntegrationTest {
 
     @BeforeEach
     public void setUp() {
-        HibernateUtil.initNewEMF("personalInMemory");
-        emf = HibernateUtil.getEntityManagerFactory();
+        emf = HibernateUtil.getEntityManagerFactory("inMemoryDB");
         em = emf.createEntityManager();
     }
 

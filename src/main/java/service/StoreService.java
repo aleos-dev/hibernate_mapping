@@ -4,5 +4,5 @@ import dto.RentalDTO;
 
 public interface StoreService {
 
-    boolean proceedRental(RentalDTO rentalDTO);
+    boolean rentFilm(RentalDTO rentalDTO);
 }

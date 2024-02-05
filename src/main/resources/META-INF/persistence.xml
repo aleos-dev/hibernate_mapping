@@ -4,9 +4,9 @@
              xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
              version="3.0">
 
-    <persistence-unit name="personal">
+    <persistence-unit name="default">
 
-      <class>entity.Address</class>
+        <class>entity.Address</class>
         <class>entity.City</class>
         <class>entity.Country</class>
         <class>entity.Customer</class>
@@ -30,7 +30,7 @@
 
             <!-- Hibernate properties -->
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
-<!--            <property name="hibernate.show_sql" value="true"/>-->
+            <!--            <property name="hibernate.show_sql" value="true"/>-->
             <property name="hibernate.format_sql" value="true"/>
             <property name="hibernate.use_sql_comments" value="true"/>
             <property name="hibernate.hbm2ddl.auto" value="update"/>
@@ -39,15 +39,15 @@
             <property name="hibernate.physical_naming_strategy"
                       value="org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl"/>
 
-            <property name="hibernate.session.events.log.LOG_QUERIES_SLOWER_THAN_MS" value="20" />
+            <property name="hibernate.session.events.log.LOG_QUERIES_SLOWER_THAN_MS" value="20"/>
             <!-- Enable Hibernate statistics -->
-            <property name="hibernate.generate_statistics" value = "true"/>
+            <property name="hibernate.generate_statistics" value="true"/>
         </properties>
 
 
     </persistence-unit>
 
-    <persistence-unit name="personalInMemory">
+    <persistence-unit name="inMemoryDB">
         <class>entity.Actor</class>
         <class>entity.Address</class>
         <class>entity.Category</class>
@@ -65,6 +65,7 @@
             <!-- H2 Database configuration -->
             <property name="jakarta.persistence.jdbc.driver" value="org.h2.Driver"/>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1"/>
+            <!--            <property name="hibernate.connection.url">jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=MySQL;INIT=CREATE SCHEMA IF NOT EXISTS movie</property>-->
             <property name="jakarta.persistence.jdbc.user" value="sa"/>
             <property name="jakarta.persistence.jdbc.password" value=""/>
 

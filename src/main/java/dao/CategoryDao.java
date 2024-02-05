@@ -46,4 +46,8 @@ public class CategoryDao implements Dao<Category, Long> {
     public void delete(Category entity) {
         genericDao.delete(entity);
     }
+
+    public List<Long> registeredCategoryIds() {
+        return genericDao.registeredIds();
+    }
 }

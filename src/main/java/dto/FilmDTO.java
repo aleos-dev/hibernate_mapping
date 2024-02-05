@@ -1,23 +1,22 @@
 package dto;
 
-import entity.Language;
 import entity.enums.Rating;
 import entity.enums.SpecialFeature;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import java.util.Set;
 
 @Data
 @EqualsAndHashCode(exclude = "id")
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class FilmDTO {
 
     private long id;
     private String title;
-    private Language language;
-    private Language originalLanguage;
+    private LanguageDTO language;
+    private LanguageDTO originalLanguage;
     private String description;
     private Integer length;
     private Set<CategoryDTO> categories;

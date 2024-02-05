@@ -1,7 +1,6 @@
 package dao;
 
 import dao.interfaces.Dao;
-import dto.RentalDTO;
 import entity.*;
 import jakarta.persistence.TypedQuery;
 
@@ -48,7 +47,7 @@ public class RentalDao implements Dao<Rental, Long> {
         genericDao.delete(entity);
     }
 
-    public Inventory fetchAvailableInventory(List<Inventory> inventories) {
+    public Optional<Inventory> fetchAvailableInventoryForRental(List<Inventory> inventories) {
 
         Set<Long> ids = inventories.stream()
                 .map(Inventory::getId)
@@ -58,24 +57,25 @@ public class RentalDao implements Dao<Rental, Long> {
                 SELECT i
                 FROM Rental r
                 RIGHT JOIN Inventory i ON r.inventory.id = i.id
+                JOIN FETCH i.store
+                JOIN FETCH i.store.staffManager
                 WHERE i.id IN :ids
                 AND (r.returnDate IS NOT NULL
                     OR r.id IS NULL)
                 """;
 
-        return genericDao.runInContextWithResult(em -> {
+        return genericDao.applyFunc(em -> {
             TypedQuery<Inventory> query = em.createQuery(jpql, Inventory.class);
             query.setParameter("ids", ids);
             query.setMaxResults(1);
 
-            return query.getSingleResult();
+            List<Inventory> resultList = query.getResultList();
+            return resultList.isEmpty() ? Optional.empty() : Optional.of(resultList.get(0));
         });
     }
 
-    public Rental createRental(Inventory inventory, RentalDTO rentalDTO) {
+    public Rental addRental(Inventory inventory, Customer customer) {
 
-        var customer = Customer.builder()
-                .id(rentalDTO.getCustomerID()).build();
         var store = inventory.getStore();
         var manager = store.getStaffManager();
 
