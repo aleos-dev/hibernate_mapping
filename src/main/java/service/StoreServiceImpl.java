@@ -1,16 +1,17 @@
 package service;
 
 import dao.DaoFactory;
-import dao.RentalDao;
+import dto.InventoryDTO;
 import dto.RentalDTO;
 import entity.Customer;
 import entity.Inventory;
 import entity.Rental;
-import exception.StoreServiceException;
 import jakarta.persistence.EntityManager;
 import util.HibernateUtil;
 
+import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class StoreServiceImpl implements StoreService {
@@ -18,13 +19,15 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public Optional<Rental> rentFilm(RentalDTO rentalDTO) {
 
+        Objects.requireNonNull(rentalDTO);
+
         return HibernateUtil.runInContextWithResult(em -> {
 
             var rentalDao = DaoFactory.buildRentalDao(em);
             var paymentDao = DaoFactory.buildPaymentDao(em);
 
             var customer = createCustomerFromRentalDTO(rentalDTO);
-            var inventory = getInventory(em, rentalDTO);
+            var inventory = getAvailableInventory(em, rentalDTO);
 
             if (inventory.isEmpty()) {
                 inventoryDoesNotExist(inventory, rentalDTO);
@@ -38,29 +41,61 @@ public class StoreServiceImpl implements StoreService {
         });
     }
 
+    @Override
+    public boolean returnFilmByCustomer(long filmId, long customerId) {
 
-    private boolean inventoryDoesNotExist(Optional<Inventory> inventory, RentalDTO rentalDTO) {
+        return HibernateUtil.runInContextWithResult(em -> {
 
-        if (inventory.isEmpty()) {
-            System.out.println(String.format("No such filmId: %s, is current available for storeId: %s", rentalDTO.getFilmId(), rentalDTO.getStoreId()));
+            var query = em.createQuery("""
+                            SELECT p.rental
+                            FROM Payment p 
+                            WHERE p.rental.inventory.film.id = :filmId
+                            AND p.rental.customer.id = :customerId
+                            AND p.rental.returnDate IS NULL
+                    """, Rental.class);
+
+            query.setParameter("filmId", filmId);
+            query.setParameter("customerId", customerId);
+
+            List<Rental> rentalList = query.getResultList();
+
+            if (rentalList.isEmpty()) {
+                System.out.println(String.format("Rental record not found for FilmID: %d, and CustomerID: %d",
+                        filmId, customerId));
+                return false;
+            }
+
+            var rental = rentalList.getFirst();
+
+            rental.setReturnDate(ZonedDateTime.now());
+
             return true;
-        }
+        });
+}
 
-        return false;
+
+private boolean inventoryDoesNotExist(Optional<Inventory> inventory, RentalDTO rentalDTO) {
+
+    if (inventory.isEmpty()) {
+        System.out.println(String.format("No such filmId: %s, is current available for storeId: %s", rentalDTO.getFilmId(), rentalDTO.getStoreId()));
+        return true;
     }
 
-    private Customer createCustomerFromRentalDTO(RentalDTO rentalDTO) {
-        return Customer.builder().id(rentalDTO.getCustomerID()).build();
-    }
+    return false;
+}
 
-    private Optional<Inventory> getInventory(EntityManager em, RentalDTO rentalDTO) {
+private Customer createCustomerFromRentalDTO(RentalDTO rentalDTO) {
+    return Customer.builder().id(rentalDTO.getCustomerID()).build();
+}
 
-        var filmId = rentalDTO.getFilmId();
-        var storeId = rentalDTO.getStoreId();
+private Optional<Inventory> getAvailableInventory(EntityManager em, RentalDTO rentalDTO) {
 
-        List<Inventory> inventories = DaoFactory.buildInventoryDao(em)
-                .findInventoriesByFilmIdAndStoreId(filmId, storeId);
+    var filmId = rentalDTO.getFilmId();
+    var storeId = rentalDTO.getStoreId();
 
-        return DaoFactory.buildRentalDao(em).fetchAvailableInventoryForRental(inventories);
-    }
+    List<Inventory> inventories = DaoFactory.buildInventoryDao(em)
+            .findInventoriesByFilmIdAndStoreId(filmId, storeId);
+
+    return DaoFactory.buildRentalDao(em).fetchAvailableInventoryForRental(inventories);
+}
 }

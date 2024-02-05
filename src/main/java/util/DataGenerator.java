@@ -42,13 +42,11 @@ public class DataGenerator {
     }
 
     public static CustomerDTO generateCustomerDTO() {
-        Person customer = fairy.person();
-
 
         CustomerDTO fakeCustomer = new CustomerDTO();
-        fakeCustomer.setFirstName(customer.getFirstName());
-        fakeCustomer.setLastName(customer.getLastName());
-        fakeCustomer.setEmail(customer.getEmail());
+        fakeCustomer.setFirstName(fairyPerson.getFirstName());
+        fakeCustomer.setLastName(fairyPerson.getLastName());
+        fakeCustomer.setEmail(fairyPerson.getEmail());
 
         fakeCustomer.setStoreId(fairyBaseProducer.randomElement(storeIds));
         fakeCustomer.setAddressId(fairyBaseProducer.randomElement(addressIds));
@@ -58,7 +56,6 @@ public class DataGenerator {
     }
 
     public static FilmDTO generateFilmDTO() {
-        Fairy fairy = Fairy.create();
 
         FilmDTO fakeFilm = new FilmDTO();
         fakeFilm.setTitle(textProducer.latinWord());
