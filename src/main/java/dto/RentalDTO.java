@@ -17,5 +17,5 @@ public class RentalDTO {
 
     long storeId;
 
-    long fimlId;
+    long filmId;
 }

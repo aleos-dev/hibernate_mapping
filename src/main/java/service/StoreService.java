@@ -1,8 +1,11 @@
 package service;
 
 import dto.RentalDTO;
+import entity.Rental;
+
+import java.util.Optional;
 
 public interface StoreService {
 
-    boolean rentFilm(RentalDTO rentalDTO);
+    Optional<Rental> rentFilm(RentalDTO rentalDTO);
 }

@@ -79,7 +79,7 @@ public class RentalDao implements Dao<Rental, Long> {
         var store = inventory.getStore();
         var manager = store.getStaffManager();
 
-        var rental = Rental.builder()
+        Rental rental = Rental.builder()
                 .customer(customer)
                 .store(store)
                 .staffManager(manager)

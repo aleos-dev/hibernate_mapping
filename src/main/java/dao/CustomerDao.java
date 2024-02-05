@@ -3,6 +3,8 @@ package dao;
 import dao.interfaces.Dao;
 import entity.Country;
 import entity.Customer;
+import entity.Film;
+import jakarta.persistence.TypedQuery;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,7 +33,6 @@ public class CustomerDao implements Dao<Customer, Long> {
         return genericDao.findAll();
     }
 
-
     @Override
     public void save(Customer entity) {
         genericDao.save(entity);
@@ -49,6 +50,13 @@ public class CustomerDao implements Dao<Customer, Long> {
 
     public List<Long> registeredCustomerIds() {
         return genericDao.registeredIds();
+    }
+    public Customer fetchRandomCustomer() {
+        return genericDao.applyFunc(em -> {
+            @SuppressWarnings("unchecked")
+            var query = (TypedQuery<Customer>) em.createNativeQuery("SELECT * FROM customer ORDER BY RANDOM() LIMIT 1", Customer.class);
+            return query.getSingleResult();
+        });
     }
 
 }

@@ -5,6 +5,8 @@ import entity.Category;
 import entity.Customer;
 import entity.Film;
 import exception.FilmDTOException;
+import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
 import util.HibernateUtil;
 
 import java.util.List;
@@ -52,5 +54,13 @@ public class FilmDao implements Dao<Film, Long> {
 
     public List<Long> registeredFilmIds() {
         return genericDao.registeredIds();
+    }
+
+    public Film fetchRandomFilm() {
+        return genericDao.applyFunc(em -> {
+            @SuppressWarnings("unchecked")
+            var query = (TypedQuery<Film>) em.createNativeQuery("SELECT * FROM film ORDER BY RANDOM() LIMIT 1", Film.class);
+            return query.getSingleResult();
+        });
     }
 }

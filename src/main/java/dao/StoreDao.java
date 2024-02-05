@@ -1,6 +1,7 @@
 package dao;
 
 import dao.interfaces.Dao;
+import entity.Film;
 import entity.Store;
 import jakarta.persistence.TypedQuery;
 
@@ -41,13 +42,21 @@ public class StoreDao implements Dao<Store, Long> {
         return genericDao.update(entity);
     }
 
+    @Override
+    public void delete(Store entity) {
+        genericDao.delete(entity);
+    }
+
     public List<Long> registeredStoreIds() {
         return genericDao.registeredIds();
     }
 
-    @Override
-    public void delete(Store entity) {
-        genericDao.delete(entity);
+    public Store fetchRandomStore() {
+        return genericDao.applyFunc(em -> {
+            @SuppressWarnings("unchecked")
+            var query = (TypedQuery<Store>) em.createNativeQuery("SELECT * FROM store ORDER BY RANDOM() LIMIT 1", Store.class);
+            return query.getSingleResult();
+        });
     }
 
 }

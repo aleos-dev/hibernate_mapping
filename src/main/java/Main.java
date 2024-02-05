@@ -1,8 +1,5 @@
 import dao.DaoFactory;
-import dto.*;
-import entity.Language;
-import entity.enums.Rating;
-import entity.enums.SpecialFeature;
+import dto.CustomerDTO;
 import jakarta.persistence.EntityManagerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,8 +8,6 @@ import service.FilmServiceImpl;
 import service.StoreServiceImpl;
 import util.DataGenerator;
 import util.HibernateUtil;
-
-import java.util.Set;
 
 public class Main {
 
@@ -55,45 +50,5 @@ public class Main {
         } finally {
             HibernateUtil.shutdown();
         }
-    }
-
-    private static void rentFilmByCustomerFromStore(long filmId, long customerId, long storeId) {
-
-        var storeService = new StoreServiceImpl();
-
-        var rentalInfo = createRentalDTO(customerId, filmId, storeId);
-
-        storeService.rentFilm(rentalInfo);
-    }
-
-
-
-
-
-    private static void registerCustomer(String email) {
-
-        var customerService = new CustomerServiceImpl();
-        var customerDTO = CustomerDTO.builder()
-                .firstName("Aleos")
-                .lastName("Empty")
-                .email(email)
-                .addressId(1)
-                .storeId(1)
-                .isActive(true)
-                .build();
-
-        customerService.register(customerDTO);
-
-    }
-
-
-
-    private static RentalDTO createRentalDTO(long customerId, long filmId, long storeId) {
-
-        return RentalDTO.builder()
-                .fimlId(filmId)
-                .storeId(storeId)
-                .customerID(customerId)
-                .build();
     }
 }

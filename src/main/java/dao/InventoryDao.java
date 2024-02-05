@@ -78,7 +78,7 @@ public class InventoryDao implements Dao<Inventory, Long> {
         });
     }
 
-    public void registerNewInventory(long filmId, long storeId) {
+    public long registerNewInventory(long filmId, long storeId) {
 
         Inventory inventory = Inventory.builder()
                 .film(Film.builder().id(filmId).build())
@@ -86,5 +86,7 @@ public class InventoryDao implements Dao<Inventory, Long> {
                 .build();
 
         genericDao.save(inventory);
+
+        return inventory.getId();
     }
 }

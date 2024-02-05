@@ -16,7 +16,7 @@ import java.util.Optional;
 public class StoreServiceImpl implements StoreService {
 
     @Override
-    public boolean rentFilm(RentalDTO rentalDTO) {
+    public Optional<Rental> rentFilm(RentalDTO rentalDTO) {
 
         return HibernateUtil.runInContextWithResult(em -> {
 
@@ -26,38 +26,36 @@ public class StoreServiceImpl implements StoreService {
             var customer = createCustomerFromRentalDTO(rentalDTO);
             var inventory = getInventory(em, rentalDTO);
 
-            if (inventory.isEmpty()) return inventoryDoesNotExist(inventory, rentalDTO);
+            if (inventory.isEmpty()) {
+                inventoryDoesNotExist(inventory, rentalDTO);
+                return Optional.empty();
+            }
 
-            var newRental = createRentalRecord(rentalDao, inventory, customer);
-
-            // should be boolean....
+            Rental newRental = rentalDao.addRental(inventory.get(), customer);
             paymentDao.acceptPaymentForRental(newRental);
 
-            return true;
+            return Optional.of(newRental);
         });
     }
 
-    private static Rental createRentalRecord(RentalDao rentalDao, Optional<Inventory> inventory, Customer customer) {
-        return rentalDao.addRental(inventory.get(), customer);
-    }
 
-    private static boolean inventoryDoesNotExist(Optional<Inventory> inventory, RentalDTO rentalDTO) {
+    private boolean inventoryDoesNotExist(Optional<Inventory> inventory, RentalDTO rentalDTO) {
 
         if (inventory.isEmpty()) {
-            System.out.println(String.format("No such filmId: %s, is current available for storeId: %s", rentalDTO.getFimlId(), rentalDTO.getStoreId()));
+            System.out.println(String.format("No such filmId: %s, is current available for storeId: %s", rentalDTO.getFilmId(), rentalDTO.getStoreId()));
             return true;
         }
 
         return false;
     }
 
-    private static Customer createCustomerFromRentalDTO(RentalDTO rentalDTO) {
+    private Customer createCustomerFromRentalDTO(RentalDTO rentalDTO) {
         return Customer.builder().id(rentalDTO.getCustomerID()).build();
     }
 
-    private static Optional<Inventory> getInventory(EntityManager em, RentalDTO rentalDTO) {
+    private Optional<Inventory> getInventory(EntityManager em, RentalDTO rentalDTO) {
 
-        var filmId = rentalDTO.getFimlId();
+        var filmId = rentalDTO.getFilmId();
         var storeId = rentalDTO.getStoreId();
 
         List<Inventory> inventories = DaoFactory.buildInventoryDao(em)
