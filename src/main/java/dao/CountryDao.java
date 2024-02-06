@@ -1,7 +1,6 @@
 package dao;
 
 import dao.interfaces.Dao;
-import entity.City;
 import entity.Country;
 
 import java.util.List;
@@ -10,7 +9,7 @@ import java.util.Set;
 
 public class CountryDao implements Dao<Country, Long> {
 
-    private GenericDao<Country, Long> genericDao;
+    private final GenericDao<Country, Long> genericDao;
 
     public CountryDao(GenericDao<Country, Long> genericDao) {
         this.genericDao = genericDao;

@@ -6,13 +6,9 @@ import com.devskiller.jfairy.producer.person.Person;
 import com.devskiller.jfairy.producer.text.TextProducer;
 import dao.DaoFactory;
 import dto.*;
-import entity.Category;
-import entity.Language;
 import entity.enums.Rating;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -26,10 +22,10 @@ public class DataGenerator {
     private static List<Long> categoryIds;
     private static List<Long> actorIds;
 
-    private static Fairy fairy = Fairy.create();
-    private static Person fairyPerson = fairy.person();
-    private static BaseProducer fairyBaseProducer = fairy.baseProducer();
-    private static TextProducer textProducer = fairy.textProducer();
+    private static final Fairy fairy = Fairy.create();
+    private static final Person fairyPerson = fairy.person();
+    private static final BaseProducer fairyBaseProducer = fairy.baseProducer();
+    private static final TextProducer textProducer = fairy.textProducer();
 
     static {
         refreshDataCount();
@@ -66,7 +62,7 @@ public class DataGenerator {
         fakeFilm.setActors(generateSetOfActorDTO());
 
         var rating = Rating.values();
-        fakeFilm.setRating(rating[fairyBaseProducer.randomBetween(0, rating.length)]);
+        fakeFilm.setRating(rating[fairyBaseProducer.randomBetween(0, rating.length - 1)]);
 
         return fakeFilm;
     }

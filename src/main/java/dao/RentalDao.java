@@ -70,7 +70,7 @@ public class RentalDao implements Dao<Rental, Long> {
             query.setMaxResults(1);
 
             List<Inventory> resultList = query.getResultList();
-            return resultList.isEmpty() ? Optional.empty() : Optional.of(resultList.get(0));
+            return resultList.isEmpty() ? Optional.empty() : Optional.of(resultList.getFirst());
         });
     }
 

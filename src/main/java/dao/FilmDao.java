@@ -1,16 +1,10 @@
 package dao;
 
 import dao.interfaces.Dao;
-import entity.Category;
-import entity.Customer;
 import entity.Film;
-import exception.FilmDTOException;
-import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
-import util.HibernateUtil;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 

@@ -13,7 +13,7 @@ public enum Rating {
     NC_17("NC-17"),
     NONE(null);
 
-    private String value;
+    private final String value;
 
     Rating(String value) {
         this.value = value;

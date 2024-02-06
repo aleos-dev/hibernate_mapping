@@ -1,7 +1,6 @@
 package dao;
 
 import dao.interfaces.Dao;
-import entity.Rental;
 import entity.StaffManager;
 
 import java.util.List;

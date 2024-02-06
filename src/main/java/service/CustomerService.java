@@ -4,5 +4,5 @@ import dto.CustomerDTO;
 
 public interface CustomerService {
 
-    void register(CustomerDTO customerDTO);
+    long register(CustomerDTO customerDTO);
 }

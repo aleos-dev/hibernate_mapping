@@ -1,7 +1,6 @@
 package dao;
 
 import dao.interfaces.Dao;
-import entity.Address;
 import entity.Category;
 
 import java.util.List;

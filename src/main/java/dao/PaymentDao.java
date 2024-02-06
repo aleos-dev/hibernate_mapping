@@ -1,11 +1,9 @@
 package dao;
 
 import dao.interfaces.Dao;
-import entity.Language;
 import entity.Payment;
 import entity.Rental;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -48,17 +46,19 @@ public class PaymentDao implements Dao<Payment, Long> {
         genericDao.delete(entity);
     }
 
-    public void acceptPaymentForRental(Rental createdRental) {
+    public void acceptPaymentForRental(Rental rental) {
 
-            var rentalCost = createdRental.getInventory().getFilm().getRentalInfo().getRentalRate();
+            var rentalCost = rental.getInventory().getFilm().getRentalInfo().getRentalRate();
 
-            Payment rentalPayment = Payment.builder()
-                    .rental(createdRental)
+            Payment payment = Payment.builder()
                     .amount(rentalCost)
-                    .customer(createdRental.getCustomer())
-                    .manager(createdRental.getStaffManager())
+                    .customer(rental.getCustomer())
+                    .manager(rental.getStaffManager())
                     .build();
 
-            genericDao.save(rentalPayment);
+            payment.addRental(rental);
+
+            genericDao.save(payment);
+
     }
 }

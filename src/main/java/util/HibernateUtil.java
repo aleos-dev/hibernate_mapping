@@ -8,15 +8,13 @@ import jakarta.persistence.Persistence;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static java.util.Objects.nonNull;
-
 
 public class HibernateUtil {
 
     private static final Object LOCK = new Object();
-    private static EntityManagerFactory EMF;
+    private static volatile EntityManagerFactory EMF;
 
-    public static EntityManagerFactory getEntityManagerFactory(String persistenceUnitName) {
+    public static EntityManagerFactory initEMF(String persistenceUnitName) {
         if (EMF == null) {
             synchronized (LOCK) {
                 if (EMF == null) {
@@ -24,7 +22,13 @@ public class HibernateUtil {
                 }
             }
         }
+
+        if (!EMF.isOpen()) { EMF = buildEntityManagerFactory(persistenceUnitName); }
         return EMF;
+    }
+
+    public static EntityManagerFactory getEntityManagerFactory() {
+        return initEMF(null);
     }
 
     private static EntityManagerFactory buildEntityManagerFactory(String persistenceUnitName) {

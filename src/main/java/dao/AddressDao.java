@@ -1,7 +1,6 @@
 package dao;
 
 import dao.interfaces.Dao;
-import entity.Actor;
 import entity.Address;
 
 import java.util.List;

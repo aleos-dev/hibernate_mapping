@@ -24,7 +24,7 @@ class FilmServiceImplIntegrationTest {
 
     @BeforeEach
     public void setUp() {
-        emf = HibernateUtil.getEntityManagerFactory("inMemoryDB");
+        emf = HibernateUtil.initEMF("inMemoryDB");
         em = emf.createEntityManager();
         filmService = new FilmServiceImpl();
     }

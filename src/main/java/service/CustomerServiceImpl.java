@@ -4,15 +4,14 @@ import dao.DaoFactory;
 import dto.CustomerDTO;
 import entity.Customer;
 import exception.CustomerDTOException;
-import jakarta.persistence.EntityManagerFactory;
 import util.HibernateUtil;
 
 public class CustomerServiceImpl implements CustomerService {
 
     @Override
-    public void register(CustomerDTO customerDTO) {
+    public long register(CustomerDTO customerDTO) {
 
-        HibernateUtil.runInContext(em -> {
+        return HibernateUtil.runInContextWithResult(em -> {
             var address = DaoFactory.buildAddressDao(em).findById(customerDTO.getAddressId());
             var store = DaoFactory.buildStoreDao(em).findById(customerDTO.getStoreId());
 
@@ -31,6 +30,8 @@ public class CustomerServiceImpl implements CustomerService {
 
             DaoFactory.buildCustomerDao(em)
                     .save(newCustomer);
+
+            return newCustomer.getId();
         });
     }
 }

@@ -1,12 +1,12 @@
 package service;
 
 import dao.DaoFactory;
-import dto.InventoryDTO;
 import dto.RentalDTO;
 import entity.Customer;
 import entity.Inventory;
 import entity.Rental;
 import jakarta.persistence.EntityManager;
+import lombok.extern.slf4j.Slf4j;
 import util.HibernateUtil;
 
 import java.time.ZonedDateTime;
@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+@Slf4j
 public class StoreServiceImpl implements StoreService {
 
     @Override
@@ -26,16 +27,17 @@ public class StoreServiceImpl implements StoreService {
             var rentalDao = DaoFactory.buildRentalDao(em);
             var paymentDao = DaoFactory.buildPaymentDao(em);
 
-            var customer = createCustomerFromRentalDTO(rentalDTO);
+            var customerDTO = arrangeCustomerDTOBasedOn(rentalDTO);
             var inventory = getAvailableInventory(em, rentalDTO);
 
             if (inventory.isEmpty()) {
-                inventoryDoesNotExist(inventory, rentalDTO);
+                inventoryDoesNotExist(rentalDTO);
                 return Optional.empty();
             }
 
-            Rental newRental = rentalDao.addRental(inventory.get(), customer);
+            Rental newRental = rentalDao.addRental(inventory.get(), customerDTO);
             paymentDao.acceptPaymentForRental(newRental);
+
 
             return Optional.of(newRental);
         });
@@ -48,7 +50,7 @@ public class StoreServiceImpl implements StoreService {
 
             var query = em.createQuery("""
                             SELECT p.rental
-                            FROM Payment p 
+                            FROM Payment p
                             WHERE p.rental.inventory.film.id = :filmId
                             AND p.rental.customer.id = :customerId
                             AND p.rental.returnDate IS NULL
@@ -60,8 +62,8 @@ public class StoreServiceImpl implements StoreService {
             List<Rental> rentalList = query.getResultList();
 
             if (rentalList.isEmpty()) {
-                System.out.println(String.format("Rental record not found for FilmID: %d, and CustomerID: %d",
-                        filmId, customerId));
+                System.out.printf("Rental record not found for FilmID: %d, and CustomerID: %d%n",
+                        filmId, customerId);
                 return false;
             }
 
@@ -74,17 +76,12 @@ public class StoreServiceImpl implements StoreService {
 }
 
 
-private boolean inventoryDoesNotExist(Optional<Inventory> inventory, RentalDTO rentalDTO) {
+private void inventoryDoesNotExist(RentalDTO rentalDTO) {
 
-    if (inventory.isEmpty()) {
-        System.out.println(String.format("No such filmId: %s, is current available for storeId: %s", rentalDTO.getFilmId(), rentalDTO.getStoreId()));
-        return true;
-    }
-
-    return false;
+        log.info(String.format("No such filmId: %s, is current available for storeId: %s", rentalDTO.getFilmId(), rentalDTO.getStoreId()));
 }
 
-private Customer createCustomerFromRentalDTO(RentalDTO rentalDTO) {
+private Customer arrangeCustomerDTOBasedOn(RentalDTO rentalDTO) {
     return Customer.builder().id(rentalDTO.getCustomerID()).build();
 }
 

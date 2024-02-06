@@ -1,7 +1,6 @@
 package dao;
 
 import dao.interfaces.Dao;
-import entity.Inventory;
 import entity.Language;
 
 import java.util.List;

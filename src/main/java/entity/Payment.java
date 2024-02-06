@@ -14,8 +14,8 @@ import java.time.ZonedDateTime;
 @EqualsAndHashCode(of = "id")
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(of = "id")
 @Builder
-@ToString
 @Table(name = "payment",
         indexes = {
                 @Index(name = "index_payment_customer_id", columnList = "customer_id"),
@@ -36,6 +36,7 @@ public class Payment {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "rental_id", foreignKey = @ForeignKey(name = "pk_fk_payment_rental_id"))
+    @Setter(AccessLevel.PRIVATE)
     @MapsId
     private Rental rental;
 
@@ -49,4 +50,9 @@ public class Payment {
     @UpdateTimestamp
     @Column(name = "last_Update")
     private ZonedDateTime lastUpdate;
+
+    public void addRental(Rental rental) {
+        this.rental = rental;
+        rental.setPayment(this);
+    }
 }

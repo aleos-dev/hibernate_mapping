@@ -1,9 +1,7 @@
 package dao;
 
 import dao.interfaces.Dao;
-import entity.Country;
 import entity.Customer;
-import entity.Film;
 import jakarta.persistence.TypedQuery;
 
 import java.util.List;

@@ -1,7 +1,6 @@
 package dao;
 
 import dao.interfaces.Dao;
-import entity.Film;
 import entity.Store;
 import jakarta.persistence.TypedQuery;
 

@@ -69,7 +69,7 @@ public class GenericDao<T, ID extends Serializable> implements Dao<T, ID> {
     }
 
 
-    public <T> T applyFunc(Function<EntityManager, T> func) {
+    public <R> R applyFunc(Function<EntityManager, R> func) {
         return func.apply(em);
     }
 

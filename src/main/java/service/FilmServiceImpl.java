@@ -1,14 +1,12 @@
 package service;
 
 import dao.DaoFactory;
-import dto.ActorDTO;
 import dto.CategoryDTO;
 import dto.FilmDTO;
 import entity.Actor;
 import entity.Category;
 import entity.Film;
 import entity.Language;
-import exception.ActorDTOException;
 import exception.FilmDTOException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
