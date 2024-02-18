@@ -15,6 +15,10 @@ public class SchemaCreatingIntegrator implements Integrator {
     @Override
     public void integrate(Metadata metadata, SessionFactoryImplementor sessionFactory, SessionFactoryServiceRegistry serviceRegistry) {
         // Replace these with your actual database connection details
+        boolean isTestEnvironment = "true".equals(System.getProperty("isTestEnvironment"));
+
+        if (isTestEnvironment) return;
+
         String jdbcUrl = "jdbc:postgresql://localhost:5432/testdb";
         String username = "aleos";
         String password = "root";

@@ -41,6 +41,7 @@ public class Payment {
     private Rental rental;
 
     @Column(name = "amount", precision = 5, scale = 2, nullable = false)
+    @Builder.Default
     private BigDecimal amount = BigDecimal.valueOf(0);
 
     @CreationTimestamp
