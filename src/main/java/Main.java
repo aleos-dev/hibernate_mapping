@@ -71,7 +71,6 @@ public class Main {
             System.out.println(DaoFactory.buildFilmDao(em).findById(filmId));
             System.out.println(DaoFactory.buildCustomerDao(em).findById(customerId));
             System.out.println(DaoFactory.buildRentalDao(em).findById(rentalId));
-
         });
     }
 

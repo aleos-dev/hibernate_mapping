@@ -52,7 +52,7 @@ public class CustomerDao implements Dao<Customer, Long> {
     public Customer fetchRandomCustomer() {
         return genericDao.applyFunc(em -> {
             @SuppressWarnings("unchecked")
-            var query = (TypedQuery<Customer>) em.createNativeQuery("SELECT * FROM customer ORDER BY RANDOM() LIMIT 1", Customer.class);
+            var query = (TypedQuery<Customer>) em.createNativeQuery("SELECT * FROM movie.customer ORDER BY RANDOM() LIMIT 1", Customer.class);
             return query.getSingleResult();
         });
     }

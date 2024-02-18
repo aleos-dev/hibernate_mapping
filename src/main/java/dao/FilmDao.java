@@ -53,7 +53,7 @@ public class FilmDao implements Dao<Film, Long> {
     public Film fetchRandomFilm() {
         return genericDao.applyFunc(em -> {
             @SuppressWarnings("unchecked")
-            var query = (TypedQuery<Film>) em.createNativeQuery("SELECT * FROM film ORDER BY RANDOM() LIMIT 1", Film.class);
+            var query = (TypedQuery<Film>) em.createNativeQuery("SELECT * FROM movie.film ORDER BY RANDOM() LIMIT 1", Film.class);
             return query.getSingleResult();
         });
     }

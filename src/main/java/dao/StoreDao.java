@@ -53,7 +53,7 @@ public class StoreDao implements Dao<Store, Long> {
     public Store fetchRandomStore() {
         return genericDao.applyFunc(em -> {
             @SuppressWarnings("unchecked")
-            var query = (TypedQuery<Store>) em.createNativeQuery("SELECT * FROM store ORDER BY RANDOM() LIMIT 1", Store.class);
+            var query = (TypedQuery<Store>) em.createNativeQuery("SELECT * FROM movie.store ORDER BY RANDOM() LIMIT 1", Store.class);
             return query.getSingleResult();
         });
     }
