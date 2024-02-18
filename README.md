@@ -9,6 +9,10 @@ The Video Rental Store Application is a comprehensive educational project design
 
 At its core, the Video Rental Store Application simulates the operations of a physical video rental store in a digital format. It models the various aspects of the business through a well-defined set of entities and their relationships, encapsulating the intricacies of video rental processes. This project is not just about understanding Hibernate but also about seeing it in action in a practical, API-driven environment.
 
+<p align="center">
+  <img src="assets/diagram.png" width="800" />
+</p>
+
 ### Basic Requirements and Features
 
 The application's data model includes a comprehensive suite of tables designed to represent the essential components of a video rental business. The entities involved include:
